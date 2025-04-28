@@ -5,7 +5,10 @@ import com.cpu.process.Process;
 
 public interface ProcessorController {
     void IncreasePowerConsumption();
-    Object DecreaseUsingProcessBT(Integer currentTime);
+    void DecreaseUsingProcessBT();
     void setProcess(Process usingProcess);
     Process getUsingProcess();
+    Process RemoveTerminatedProcess(Integer currentTime);
+    void setProcessorStatusNonRunning();
+    Double getPowerConsumption();
 }

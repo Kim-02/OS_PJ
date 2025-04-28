@@ -12,17 +12,17 @@ import com.cpu.Processor.ProcessorController;
 @RequiredArgsConstructor
 @Getter
 public class CpuSystem {
-    private Queue<Process> TerminateProcessQueue = new LinkedList<>();
-    private Queue<Process> WaitingProcessQueue = new LinkedList<>();
-    private Integer ProcessingTime =0;
+    protected Queue<Process> TerminateProcessQueue = new LinkedList<>();
+    protected Queue<Process> WaitingProcessQueue = new LinkedList<>();
+    protected Integer ProcessingTime =0;
     protected ProcessorController[] ProcessorList = new ProcessorController[4];
-    private int ProcessorCount = 0;
-    private Map<Integer,ArrayList<Process>> ProcessMap = new HashMap<>();
+    protected int ProcessorCount = 0;
+    protected Map<Integer,Queue<Process>> ProcessMap = new HashMap<>();
 
     //test용도
     protected List<String[]> ClockHistory = new ArrayList<>();
 
-    protected void IncreaseProcessingTime(){
+    public void IncreaseProcessingTime(){
         ProcessingTime+=1;
     }
 
@@ -34,14 +34,15 @@ public class CpuSystem {
         ProcessorCount++;
     }
 
-    public void setProcess(Integer AT,Integer BT){
+    public void setProcess(String ProcessName,Integer AT,Integer BT){
 
         Process P = Process.builder()
+                .ProcessName(ProcessName)
                 .ArrivalTime(AT)
                 .RemainTime(BT)
                 .build();
         int totalProcesses = ProcessMap.values().stream()
-                .mapToInt(ArrayList::size)
+                .mapToInt(Queue::size)
                 .sum();
 
         if (totalProcesses >= 15) {
@@ -51,32 +52,22 @@ public class CpuSystem {
         if (ProcessMap.containsKey(AT)) {
             ProcessMap.get(AT).add(P);
         } else {
-            ArrayList<Process> list = new ArrayList<>();
+            Queue<Process> list = new LinkedList<>();
             list.add(P);
             ProcessMap.put(AT, list);
         }
     }
 
-    public boolean isAllProcessTerminated() {
-        // 1. Processor에 남아있는 프로세스 체크
-        boolean allProcessorsIdle = true;
-        for (ProcessorController processor : ProcessorList) {
-            if (processor != null && processor.getUsingProcess() != null) {
-                allProcessorsIdle = false;
-                break;
+    public ProcessorController findEmptyProcessor(){
+        for (ProcessorController p : ProcessorList) {
+            if(p.getUsingProcess() == null){
+                return p;
             }
         }
-
-        // 2. 대기 큐에 프로세스 남아있는지 체크
-        boolean waitingQueueEmpty = WaitingProcessQueue.isEmpty();
-
-        // 3. 앞으로 도착할 프로세스가 남아있는지 체크
-        boolean futureProcessExist = ProcessMap.entrySet().stream()
-                .anyMatch(entry -> entry.getKey() >= ProcessingTime);
-
-        // 4. 세 가지 다 만족해야 종료
-        return allProcessorsIdle && waitingQueueEmpty && !futureProcessExist;
+        return null;
     }
+
+
 
     public void runOneClock() {
         // 기본은 아무 것도 안 함

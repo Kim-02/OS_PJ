@@ -13,25 +13,23 @@ public class P_Processor implements ProcessorController{
     private final Integer WorkingCounter = 2;
     @Override
     public void IncreasePowerConsumption() {
-        if(!isProcessorRunning) {
-            powerConsumption += 3.5;
-            isProcessorRunning = true;
-        }
-        else{
-            powerConsumption += 3.0;
+        if(usingProcess != null) {
+            if(!isProcessorRunning) {
+                powerConsumption += 3.5;
+                isProcessorRunning = true;
+            }
+            else{
+                powerConsumption += 3.0;
+            }
         }
     }
     @Override
-    public Object DecreaseUsingProcessBT(Integer currentTime){
-        if(usingProcess != null && usingProcess.getRemainTime()>0) { // 만약 처리할 수 있는 프로세스라면
+    public void DecreaseUsingProcessBT(){
+        if(usingProcess != null) { // 만약 처리할 수 있는 프로세스라면
             usingProcess.setRemainTime(usingProcess.getRemainTime()-WorkingCounter); //  시간을 2 감소시킨다
         }
-        if(usingProcess != null && usingProcess.getRemainTime() <=0){//만약 작업이 끝난 프로세스라면 프로세스를 밖으로 뺸다
-            return RemoveswitchingProcess(currentTime);
-        }
-        return null;
     }
-    private Process RemoveswitchingProcess(Integer currentTime){
+    public Process RemoveTerminatedProcess(Integer currentTime){
         Process process = usingProcess;
         process.setTerminateTime(currentTime);
         usingProcess = null;
@@ -41,4 +39,12 @@ public class P_Processor implements ProcessorController{
     public void setProcess(Process usingProcess) {
         this.usingProcess = usingProcess;
     }
+
+    @Override
+    public void setProcessorStatusNonRunning(){
+        if(usingProcess == null && isProcessorRunning){
+            isProcessorRunning = false;
+        }
+    }
+
 }

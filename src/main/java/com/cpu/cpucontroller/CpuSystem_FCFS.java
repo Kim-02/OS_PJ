@@ -1,74 +1,66 @@
 package com.cpu.cpucontroller;
 
+import com.cpu.Processor.P_Processor;
 import com.cpu.process.Process;
 import com.cpu.Processor.ProcessorController;
-import java.util.*;
+
+import java.util.Map;
+import java.util.Queue;
 
 public class CpuSystem_FCFS extends CpuSystem {
 
     @Override
     public void runOneClock() {
-        Integer currentTime = getProcessingTime();
-        System.out.println("클럭: " + currentTime);
-
-        // 1. 현재 시간에 도착한 프로세스 처리
-        if (getProcessMap().containsKey(currentTime)) {
-            List<Process> arrivingProcesses = getProcessMap().get(currentTime);
-            getWaitingProcessQueue().addAll(arrivingProcesses);
-        }
-
-        // 2. 프로세서에 프로세스 할당
-        for (ProcessorController processor : getProcessorList()) {
-            if (processor != null) {
-                if (processor.getUsingProcess() == null && !getWaitingProcessQueue().isEmpty()) {
-                    processor.setProcess(getWaitingProcessQueue().poll());
-                }
+        // 도착 시간에 맞는 프로세스가 대기 큐에 추가되는 부분
+        if (ProcessMap.containsKey(ProcessingTime) && ProcessMap.get(ProcessingTime) != null) {
+            while (!ProcessMap.get(ProcessingTime).isEmpty()) {
+                WaitingProcessQueue.add(ProcessMap.get(ProcessingTime).poll());
             }
         }
 
-        // 3. 각 프로세서 실행
-        for (ProcessorController processor : getProcessorList()) {
-            if (processor != null) {
-                processor.IncreasePowerConsumption();
-                Object finishedProcess = processor.DecreaseUsingProcessBT(currentTime);
-                if (finishedProcess != null) {
-                    getTerminateProcessQueue().add((Process) finishedProcess);
-                }
+        // 각 프로세서를 확인하고, 종료된 프로세스는 종료 큐에 추가
+        for (ProcessorController processor : ProcessorList) {
+            if (processor.getUsingProcess() != null && processor.getUsingProcess().getRemainTime() <= 0) {
+                Process terminatedProcess = processor.RemoveTerminatedProcess(ProcessingTime);
+                TerminateProcessQueue.add(terminatedProcess);
             }
         }
 
-        // 4. 현재 상태 출력
-        printCurrentStatus();
+        // 대기 큐에서 빈 프로세서에 프로세스를 할당
+        while (!WaitingProcessQueue.isEmpty() && findEmptyProcessor() != null) {
+            ProcessorController availableProcessor = findEmptyProcessor();
+            availableProcessor.setProcess(WaitingProcessQueue.poll());
+        }
 
-        // 5. 마지막에 시간 증가
-        recordClockState();
-        IncreaseProcessingTime();
+        // 프로세서가 사용 중이지 않으면 비활성화
+        for (ProcessorController processor : ProcessorList) {
+            processor.setProcessorStatusNonRunning();
+        }
+
+        // 프로세서가 작업을 처리하고 전력을 소모하며, 버스트 타임을 감소시킴
+        for (ProcessorController processor : ProcessorList) {
+            processor.DecreaseUsingProcessBT();
+            processor.IncreasePowerConsumption();
+        }
+        printProcessorStatus();
     }
 
-    private void printCurrentStatus() {
-        System.out.println("=== 현재 상태 ===");
-        for (ProcessorController processor : getProcessorList()) {
-            if (processor != null) {
-                if (processor.getUsingProcess() != null) {
-                    System.out.println(processor.getClass().getSimpleName() + ": PID=" + processor.getUsingProcess().getArrivalTime() + ", 남은시간=" + processor.getUsingProcess().getRemainTime());
-                } else {
-                    System.out.println(processor.getClass().getSimpleName() + ": 대기 중");
-                }
-            }
-        }
-        System.out.println("=================");
-    }
 
-    private void recordClockState() {
-        String[] state = new String[4];
+    public void printProcessorStatus() {
+        System.out.println("\n=== 클럭 " + ProcessingTime + " ===");
         for (int i = 0; i < ProcessorList.length; i++) {
             ProcessorController processor = ProcessorList[i];
-            if (processor != null && processor.getUsingProcess() != null) {
-                state[i] = String.valueOf(processor.getUsingProcess().getArrivalTime()); // 프로세스 PID (도착시간으로 구분)
+            String processorType = (processor instanceof P_Processor) ? "P코어" : "E코어";
+            String processInfo;
+            if (processor.getUsingProcess() != null) {
+                processInfo = "실행중: " + processor.getUsingProcess().getProcessName()
+                        + " | 남은시간: " + processor.getUsingProcess().getRemainTime();
             } else {
-                state[i] = "-"; // 비어있으면 -
+                processInfo = "실행중: 비어있음 | 남은시간: -" ;
             }
+            System.out.println("[" + i + "번 프로세서] 타입: " + processorType
+                    + " | " + processInfo
+                    + " | 소비전력: " + processor.getPowerConsumption());
         }
-        ClockHistory.add(state);
     }
 }
