@@ -41,6 +41,13 @@ public class P_Processor implements ProcessorController{
     }
 
     @Override
+    public Process PreemptionProcess() {
+        Process process = usingProcess;
+        usingProcess = null;
+        return process;
+    }
+
+    @Override
     public void setProcessorStatusNonRunning(){
         if(usingProcess == null && isProcessorRunning){
             isProcessorRunning = false;

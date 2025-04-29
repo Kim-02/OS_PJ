@@ -35,6 +35,12 @@ public class E_Processor implements ProcessorController{
         this.usingProcess = usingProcess;
     }
 
+    @Override
+    public Process PreemptionProcess() {
+        Process process = usingProcess;
+        usingProcess = null;
+        return process;
+    }
     public Process RemoveTerminatedProcess(Integer currentTime){
         Process process = usingProcess;
         process.setTerminateTime(currentTime);

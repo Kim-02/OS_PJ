@@ -86,7 +86,5 @@ public abstract class CpuSystem {
         }
     }
 
-    public void runOneClock() {
-        // 기본은 아무 것도 안 함
-    }
+    public abstract void runOneClock();
 }

@@ -11,4 +11,5 @@ public interface ProcessorController {
     Process RemoveTerminatedProcess(Integer currentTime);
     void setProcessorStatusNonRunning();
     Double getPowerConsumption();
+    Process PreemptionProcess();
 }
