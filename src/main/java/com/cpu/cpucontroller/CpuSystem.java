@@ -11,16 +11,18 @@ import com.cpu.process.Process;
 import com.cpu.Processor.ProcessorController;
 @RequiredArgsConstructor
 @Getter
-public class CpuSystem {
+public abstract class CpuSystem {
     protected Queue<Process> TerminateProcessQueue = new LinkedList<>();
-    protected Queue<Process> WaitingProcessQueue = new LinkedList<>();
+    protected PriorityQueue<Process> WaitingProcessQueue;
     protected Integer ProcessingTime =0;
     protected ProcessorController[] ProcessorList = new ProcessorController[4];
     protected int ProcessorCount = 0;
     protected Map<Integer,Queue<Process>> ProcessMap = new HashMap<>();
 
-    //test용도
-    protected List<String[]> ClockHistory = new ArrayList<>();
+    public CpuSystem() {
+        setComparatorBasedOnCpu();
+    }
+    public abstract void setComparatorBasedOnCpu();
 
     public void IncreaseProcessingTime(){
         ProcessingTime+=1;

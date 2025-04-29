@@ -4,11 +4,22 @@ import com.cpu.Processor.P_Processor;
 import com.cpu.process.Process;
 import com.cpu.Processor.ProcessorController;
 
+import java.util.Comparator;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class CpuSystem_FCFS extends CpuSystem {
 
+    @Override
+    public void setComparatorBasedOnCpu(){
+        WaitingProcessQueue = new PriorityQueue<>(new Comparator<Process>() {
+            @Override
+            public int compare(Process p1, Process p2) {
+                return Integer.compare(p1.getArrivalTime(), p2.getArrivalTime());
+            }
+        });
+    }
     @Override
     public void runOneClock() {
         // 도착 시간에 맞는 프로세스가 대기 큐에 추가되는 부분
