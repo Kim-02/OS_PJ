@@ -1,13 +1,13 @@
 package com.cpu.cpucontroller;
 
-import com.cpu.Processor.P_Processor;
+
 import com.cpu.process.Process;
 import com.cpu.Processor.ProcessorController;
 
 import java.util.Comparator;
-import java.util.Map;
+
 import java.util.PriorityQueue;
-import java.util.Queue;
+
 
 public class CpuSystem_FCFS extends CpuSystem {
 

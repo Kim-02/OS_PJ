@@ -2,7 +2,6 @@ package com.cpu.cpucontroller;
 
 import com.cpu.Processor.P_Processor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.*;
 
