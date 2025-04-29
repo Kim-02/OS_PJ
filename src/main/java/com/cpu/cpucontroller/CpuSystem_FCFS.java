@@ -44,23 +44,4 @@ public class CpuSystem_FCFS extends CpuSystem {
         }
         printProcessorStatus();
     }
-
-
-    public void printProcessorStatus() {
-        System.out.println("\n=== 클럭 " + ProcessingTime + " ===");
-        for (int i = 0; i < ProcessorList.length; i++) {
-            ProcessorController processor = ProcessorList[i];
-            String processorType = (processor instanceof P_Processor) ? "P코어" : "E코어";
-            String processInfo;
-            if (processor.getUsingProcess() != null) {
-                processInfo = "실행중: " + processor.getUsingProcess().getProcessName()
-                        + " | 남은시간: " + processor.getUsingProcess().getRemainTime();
-            } else {
-                processInfo = "실행중: 비어있음 | 남은시간: -" ;
-            }
-            System.out.println("[" + i + "번 프로세서] 타입: " + processorType
-                    + " | " + processInfo
-                    + " | 소비전력: " + processor.getPowerConsumption());
-        }
-    }
 }
