@@ -4,8 +4,8 @@ package com.cpu.cpucontroller;
 import com.cpu.process.Process;
 import com.cpu.Processor.ProcessorController;
 
-import java.util.Comparator;
 
+import java.util.Comparator;
 import java.util.PriorityQueue;
 
 
@@ -14,7 +14,7 @@ public class CpuSystem_FCFS extends CpuSystem {
     @Override
     public void setComparatorBasedOnCpu(){
         WaitingProcessQueue = new PriorityQueue<>(
-                (p1, p2) -> Integer.compare(p1.getArrivalTime(), p2.getArrivalTime()));
+                Comparator.comparingInt(Process::getArrivalTime));
     }
     @Override
     public void runOneClock() {
