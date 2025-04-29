@@ -1,6 +1,5 @@
 package com.cpu.cpucontroller;
 
-import com.cpu.Processor.E_Processor;
 import com.cpu.Processor.P_Processor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +8,7 @@ import java.util.*;
 
 import com.cpu.process.Process;
 import com.cpu.Processor.ProcessorController;
-@RequiredArgsConstructor
+
 @Getter
 public abstract class CpuSystem {
     protected Queue<Process> TerminateProcessQueue = new LinkedList<>();
