@@ -13,12 +13,8 @@ public class CpuSystem_FCFS extends CpuSystem {
 
     @Override
     public void setComparatorBasedOnCpu(){
-        WaitingProcessQueue = new PriorityQueue<>(new Comparator<Process>() {
-            @Override
-            public int compare(Process p1, Process p2) {
-                return Integer.compare(p1.getArrivalTime(), p2.getArrivalTime());
-            }
-        });
+        WaitingProcessQueue = new PriorityQueue<>(
+                (p1, p2) -> Integer.compare(p1.getArrivalTime(), p2.getArrivalTime()));
     }
     @Override
     public void runOneClock() {
