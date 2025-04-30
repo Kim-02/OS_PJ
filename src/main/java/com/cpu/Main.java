@@ -16,7 +16,7 @@ public class Main {
 
 
         // 1. CpuSystem 객체 생성 (FCFS 스케줄러 사용)
-        CpuSystem_FCFS cpuSystem = new CpuSystem_FCFS();
+        CpuSystem_SRTN cpuSystem = new CpuSystem_SRTN();
 
         // 2. 프로세서 등록 (원하는 대로 P코어, E코어 조합)
         cpuSystem.setProcessor(new P_Processor()); // 0번 프로세서
@@ -26,10 +26,10 @@ public class Main {
 
         // 3. 프로세스 등록 (도착시간, 실행시간)
         cpuSystem.setProcess("PID1", 0, 10);  // 도착시간: 0, 실행시간: 10
-        cpuSystem.setProcess("PID2", 0, 5);   // 도착시간: 2, 실행시간: 5
-        cpuSystem.setProcess("PID3", 0, 1);   // 도착시간: 4, 실행시간: 1
-        cpuSystem.setProcess("PID4", 0, 3);   // 도착시간: 6, 실행시간: 3
-        cpuSystem.setProcess("PID5", 0, 7);   // 도착시간: 8, 실행시간: 7
+        cpuSystem.setProcess("PID2", 3, 5);   // 도착시간: 2, 실행시간: 5
+        cpuSystem.setProcess("PID3", 1, 1);   // 도착시간: 4, 실행시간: 1
+        cpuSystem.setProcess("PID4", 8, 3);   // 도착시간: 6, 실행시간: 3
+        cpuSystem.setProcess("PID5", 10, 7);   // 도착시간: 8, 실행시간: 7
 
         // 필요하면 15개까지 추가 가능
         // 4. 메인 루프 (모든 프로세스가 종료될 때까지)
